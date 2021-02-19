@@ -2,9 +2,10 @@ extends Control
 
 onready var input_username = get_node("VBoxContainer/input_username")
 onready var input_ip = get_node("VBoxContainer/input_ip")
+onready var input_host = get_node("VBoxContainer/chkHost")
 onready var text_log = get_node("text_log")
-onready var sub_title = get_node("sub_title")
-onready var server_list = get_node("server_list")
+#onready var sub_title = get_node("sub_title")
+#onready var server_list = get_node("server_list")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,7 +14,7 @@ func _ready():
 
 func getUsername():
 	if(OS.get_environment('USERNAME') != ''): 
-		return OS.get_environment('USERNAME')
+		return OS.get_environment('USERNAME') + "B"
 	elif (OS.get_environment('USERDOMAIN') != ''):
 		return OS.get_environment('USERDOMAIN')
 	else: 
@@ -31,6 +32,7 @@ func validation():
 	else:
 		Global.set_serve_ip(input_ip.text)
 		Global.set_username(input_username.text)
+		Global.set_isHost(input_host.pressed)
 		return get_tree().change_scene("res://src/scenes/Game.tscn")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

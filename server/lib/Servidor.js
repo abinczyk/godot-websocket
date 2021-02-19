@@ -25,17 +25,17 @@ export default class Servidor extends Bootstrap{
   }
 
   onInit = (ip) => {
-    this.showLog(`> Criando o servidor WebSocket em 127.0.0.1:${this.config.server_port | process.env.PORT}`, true)
-    this.showLog(`> Conexões pela rede local: ${ip != undefined ? ip : 'desabilitado'}:${this.config.server_port | process.env.PORT}`, true)
+    this.showLog(`> Created WebSocket server on 127.0.0.1:${this.config.server_port | process.env.PORT}`, true)
+    this.showLog(`> Conexões pela rede local: ${ip != undefined ? ip : 'disabled'}:${this.config.server_port | process.env.PORT}`, true)
     
     this.static.wss = new WebSocket.Server({ 
       port: this.config.server_port | process.env.PORT 
     })
 
-    this.showLog(`> Carregando a whitelist`)
+    this.showLog(`> load a whitelist`)
     this.static.whitelist = this.getWhitelist()
 
-    this.showLog(`> Iniciando o servidor`, true)
+    this.showLog(`> server initialized`, true)
     this.onServerInit()
 
     global.eventServer.emit('onServerInit');
@@ -44,7 +44,7 @@ export default class Servidor extends Bootstrap{
   onServerInit = () => {
     this.static.wss.on('connection', (ws, req) => {
       
-      this.showLog(`> Nova tentativa de conexão ${req.socket.remoteAddress}`)
+      this.showLog(`> New Connection established ${req.socket.remoteAddress}`)
 
       ws.on('message', (message) => {
         let recieveBuff = Buffer.from(message)
@@ -71,7 +71,7 @@ export default class Servidor extends Bootstrap{
           }
 
         } catch (error) {
-          this.showLog(`> Erro na chamada da função ${recieve.value.type}`)          
+          this.showLog(`> Error during command call ${recieve.value.type}`)          
           this.showLog(error.message)          
         }
 
@@ -80,7 +80,7 @@ export default class Servidor extends Bootstrap{
       ws.on('close', e => {
         if(ws.id != undefined){
           const player = this.slots.clients[ws.id]
-          this.showLog(`> ${player.getUsername()} saiu do jogo!`, true)
+          this.showLog(`> ${player.getUsername()} leaves game!`, true)
         
           this.slots.remove(player)
           this.onPlayerDisconnect(player, e)
@@ -94,7 +94,7 @@ export default class Servidor extends Bootstrap{
                 }))
               
               } catch (error) {
-                return this.showLog(`> Ocorreu um erro ao deletar o jogador: ${error.message}`, true)
+                return this.showLog(`> Error on deletion of player: ${error.message}`, true)
               }
             }
           })
@@ -107,15 +107,15 @@ export default class Servidor extends Bootstrap{
     const player = new Player(ws, data.username)
 
     if(this.slots.isFull()){
-      return this.kick(player, 'Desculpe. O servidor está cheio, tente novamente mais tarde!')
+      return this.kick(player, 'Sorry. Tis server is full. Pleas come back later!')
     }else if(this.config.white_list == true && this.static.whitelist.find(username => username == data.username) == undefined){
-      return this.kick(player, 'Desculpe. Você não está na Whitelist!')
+      return this.kick(player, 'Sorry. You are not on a whitelist. !')
     }else if(this.slots.isPlayerOnline(data.username)){
-      return this.kick(player, `Desculpe. O nome ${data.username} já está em uso!`)
+      return this.kick(player, `Sorry. Your name ${data.username} ist still in use!`)
     }else{
 
       this.slots.push(player)
-      this.showLog(`> ${data.username} entrou no jogo!`, true)
+      this.showLog(`> ${data.username} joined the game!`, true)
 
       ws.id = player.getId()
 
@@ -133,7 +133,7 @@ export default class Servidor extends Bootstrap{
    * Kick um jogador do servidor. Eles terão que sair do servidor e se reconectar, se quiserem continuar jogando.
    * @param  {Player} player 
    */
-  kick = (player, message = 'Você foi expulso do servidor!') => {
+  kick = (player, message = 'You were kicked by the server!') => {
     const ws = player.getConnection()
     try {
       ws.send(JSON.stringify({
@@ -142,7 +142,7 @@ export default class Servidor extends Bootstrap{
       }))
     
     } catch (error) {
-      return this.showLog(`Ocorreu um erro ao enviar a messagem: ${error.message}`, true)
+      return this.showLog(`An error occured with this message: ${error.message}`, true)
     }
 
     ws.close()
@@ -166,7 +166,7 @@ export default class Servidor extends Bootstrap{
         }))
       
       } catch (error) {
-        return this.showLog(`Ocorreu um erro ao enviar a messagem: ${error.message}`, true)
+        return this.showLog(`An error occured with this message: ${error.message}`, true)
       }
     }
   }
@@ -187,7 +187,7 @@ export default class Servidor extends Bootstrap{
    * @param  {Player} player
    */
   onPlayerConnect = (player) => {
-    this.sendClientMessageToAll(`${player.getUsername()} entrou no jogo!`, '#fcbf1e')
+    this.sendClientMessageToAll(`${player.getUsername()} joined the game!`, '#fcbf1e')
     return global.eventServer.emit('onPlayerConnect', player);
   }
 
@@ -197,7 +197,7 @@ export default class Servidor extends Bootstrap{
    * @param  {string} reason
    */
   onPlayerDisconnect = (player, reason) => {
-    this.sendClientMessageToAll(`${player.getUsername()} saiu do jogo!`, '#fcbf1e')
+    this.sendClientMessageToAll(`${player.getUsername()} leaved the game!`, '#fcbf1e')
     return global.eventServer.emit('onPlayerDisconnect', player, reason);
   }
 
@@ -225,7 +225,7 @@ export default class Servidor extends Bootstrap{
         try {
           client.getConnection().send(JSON.stringify(data))
         } catch (error) {
-          return this.showLog(`> Ocorreu um erro ao atualizar a posição do jogador: ${error.message}`, true)
+          return this.showLog(`> An error occured whiile updateing the players position: ${error.message}`, true)
         }
       }
     })
@@ -251,7 +251,7 @@ export default class Servidor extends Bootstrap{
     global.eventServer.emit('onPlayerCommandText', player, cmdtext);
 
     if(cmdtext[0] == '/help'){
-      return this.sendClientMessage(player,`> Comando de ajuda`)
+      return this.sendClientMessage(player,`> help command`)
     }
   }
 
@@ -290,7 +290,7 @@ export default class Servidor extends Bootstrap{
           }
         })
       } catch (error) {
-        this.showLog(`> Ocorreu um erro na criação dos personagens`)
+        this.showLog(`> error occured while creating character`)
       }
     }
   }
@@ -319,7 +319,7 @@ export default class Servidor extends Bootstrap{
         }))
       
       } catch (error) {
-        return this.showLog(`Ocorreu um erro ao criar o player: ${error.message}`, true)
+        return this.showLog(`error occured while creating character: ${error.message}`, true)
       }
     }
   }
@@ -349,7 +349,7 @@ export default class Servidor extends Bootstrap{
         }))
       
       } catch (error) {
-        return this.showLog(`Ocorreu um erro ao exibir a caixa de diálogo : ${error.message}`, true)
+        return this.showLog(`error showing dialog window : ${error.message}`, true)
       }
     }
   }

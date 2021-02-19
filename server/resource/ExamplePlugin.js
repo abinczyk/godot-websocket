@@ -15,7 +15,7 @@ export default () => {
    * @param {Player} player O jogador que conectou.
    */
   event.on('onPlayerConnect', (player) => {
-    return event.emit('sendClientMessage', player, 'Esse servidor está utilizando o plugin X')
+    return event.emit('sendClientMessage', player, 'server uses plugin x')
   });
 
   /**

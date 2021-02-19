@@ -30,6 +30,10 @@ window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
 window/stretch/mode="2d"
 
+[editor_plugins]
+
+enabled=PoolStringArray( "terminal" )
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

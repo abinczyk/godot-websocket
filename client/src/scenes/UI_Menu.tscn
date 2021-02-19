@@ -58,7 +58,7 @@ __meta__ = {
 margin_top = 37.0
 margin_right = 469.0
 margin_bottom = 51.0
-text = "Usuário"
+text = "Username"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -82,14 +82,24 @@ __meta__ = {
 margin_top = 104.0
 margin_right = 469.0
 margin_bottom = 128.0
-text = "127.0.0.1:8080"
+text = "127.0.0.1:9080"
 placeholder_text = "IP Do servidor"
+__meta__ = {
+"_editor_description_": "192.168.178.48:1880/ws/request"
+}
 
-[node name="Button" type="Button" parent="VBoxContainer"]
+[node name="chkHost" type="CheckButton" parent="VBoxContainer"]
 margin_top = 133.0
 margin_right = 469.0
-margin_bottom = 153.0
-text = "Entrar"
+margin_bottom = 173.0
+pressed = true
+text = "Start as server"
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+margin_top = 178.0
+margin_right = 469.0
+margin_bottom = 198.0
+text = "Enter"
 
 [node name="text_log" type="Label" parent="."]
 margin_left = 230.0
